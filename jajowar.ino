@@ -26,6 +26,7 @@ void read_But () {
       if (buttonState == LOW) {
         Serial.println("Кнопка натиснута");
         pinMode(5, OUTPUT);
+        mesh.sendSingle(624409705,"jajo_start");
       }
     }
   }
@@ -49,10 +50,12 @@ void receivedCallback( uint32_t from, String &msg ) {
 
   if (str1.equals(str2)) {
     pinMode(5, OUTPUT);
+    mesh.sendSingle(624409705,"jajo_start");
   }
 }
 
 void setup() {
+  mesh.sendSingle(624409705,"jajo_on");
   Serial.begin(115200);
 
   pinMode(5, INPUT);
