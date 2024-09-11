@@ -24,7 +24,7 @@ void read_But () {
     if (reading != buttonState) {
       buttonState = reading;
       if (buttonState == LOW) {
-        Serial.println("Кнопка натиснута");
+        //Serial.println("Кнопка натиснута");
         pinMode(5, OUTPUT);
         mesh.sendSingle(624409705,"jajo_start");
       }
@@ -47,10 +47,14 @@ void receivedCallback( uint32_t from, String &msg ) {
 
   String str1 = msg.c_str();
   String str2 = "jajo";
+  String str3 = "jajoeh";
 
   if (str1.equals(str2)) {
     pinMode(5, OUTPUT);
     mesh.sendSingle(624409705,"jajo_start");
+  }
+  if (str1.equals(str3)) {
+    mesh.sendSingle(624409705,"jaeh");
   }
 }
 
@@ -76,11 +80,8 @@ void loop() {
   if (!messageSent) { // Перевіряємо, чи повідомлення ще не було відправлено
     unsigned long currentMillis = millis();
 
-    // Перевіряємо, чи минуло 5 секунд
     if (currentMillis - previousMillis >= interval) {
-      // Відправляємо повідомлення після 5 секунд
       mesh.sendSingle(624409705, "jajo_on");
-      
       // Встановлюємо прапорець, щоб більше не відправляти повідомлення
       messageSent = true;
     }
