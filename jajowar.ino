@@ -4,10 +4,10 @@
 //************************************************************
 #include "painlessMesh.h"
 #include "mash_parameter.h"
+#include "CRCMASH.h"
 
 
 Scheduler userScheduler; 
-painlessMesh  mesh;
 
 class Button {
 public:
@@ -24,7 +24,7 @@ void read_But () {
       if (buttonState == LOW) {
         //Serial.println("Кнопка натиснута");
         pinMode(5, OUTPUT);
-        mesh.sendBroadcast("jajo_start");
+        sendB("jajo_start");
       }
     }
   }
@@ -41,7 +41,7 @@ unsigned long debounceDelay = 20;
 } button;
 
 
-void receivedCallback( uint32_t from, String &msg ) {
+void handleBody( const String &msg ) {
 
   String str1 = msg.c_str();
   String str2 = "jajo";
@@ -49,10 +49,10 @@ void receivedCallback( uint32_t from, String &msg ) {
 
   if (str1.equals(str2)) {
     pinMode(5, OUTPUT);
-    mesh.sendBroadcast("jajo_start");
+    sendB("jajo_start");
   }
   if (str1.equals(str3)) {
-    mesh.sendBroadcast("jaeh");
+    sendB("jaeh");
   }
 }
 
@@ -66,7 +66,7 @@ void setup() {
   pinMode(5, INPUT);
   pinMode(4, INPUT_PULLUP);
 
-  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
+  mesh.init( MESH_PREFIX, MESH_PASSWORD, MESH_PORT );
   mesh.onReceive(&receivedCallback);
 
   previousMillis = millis();
@@ -79,12 +79,14 @@ void loop() {
     unsigned long currentMillis = millis();
 
     if (currentMillis - previousMillis >= interval) {
-      mesh.sendBroadcast("jajo_on");
+      sendB("jajo_on");
       // Встановлюємо прапорець, щоб більше не відправляти повідомлення
       messageSent = true;
     }
   }
 
+  // === CRCMASH queue processing ===
+  for (uint8_t _i=0; _i<4; ++_i){ String _b; if (!qPop(_b)) break; handleBody(_b); }
   mesh.update();
 
   button.read_But();
