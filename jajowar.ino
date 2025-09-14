@@ -66,7 +66,7 @@ void setup() {
   pinMode(5, INPUT);
   pinMode(4, INPUT_PULLUP);
 
-  mesh.init( MESH_PREFIX, MESH_PASSWORD, MESH_PORT );
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
   mesh.onReceive(&receivedCallback);
 
   previousMillis = millis();
