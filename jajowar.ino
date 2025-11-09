@@ -4,9 +4,9 @@
 //************************************************************
 #include "painlessMesh.h"
 #include "mash_parameter.h"
-#include "CRCMASH.h"
+#include "CRC.h"
 
-
+painlessMesh mesh;
 Scheduler userScheduler; 
 
 class Button {
@@ -24,6 +24,7 @@ void read_But () {
       if (buttonState == LOW) {
         //Serial.println("Кнопка натиснута");
         pinMode(5, OUTPUT);
+        digitalWrite (5,LOW);
         sendB("jajo_start");
       }
     }
@@ -49,6 +50,7 @@ void handleBody( const String &msg ) {
 
   if (str1.equals(str2)) {
     pinMode(5, OUTPUT);
+    digitalWrite (5,LOW);
     sendB("jajo_start");
   }
   if (str1.equals(str3)) {
